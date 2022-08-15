@@ -56,13 +56,15 @@ static void PrintDependencies(IDictionary<string, IList<Nuget>> nugetsByName, bo
 
         foreach (var versionNuget in nugetsByVersion)
         {
-            Console.WriteLine($"-- Version {versionNuget.Key}");
+            Console.WriteLine($"-- Version: {versionNuget.Key}");
             foreach (var nuget in versionNuget)
             {
                 Console.WriteLine($"---- Path: {nuget.Path.Aggregate((a, b) => $"{a} -> {b}")}");
             }
         }
+
         Console.WriteLine("----------------");
+        Console.WriteLine();
     }
 }
 
