@@ -1,6 +1,8 @@
 using DependenciesAnalyzer;
 using NuGet.ProjectModel;
 
+//dotnet msbuild /t:GenerateRestoreGraphFile /p:RestoreGraphOutputPath=graph.dg
+
 static LockFile? GetLockFile(string projectPath, string outputPath)
 {
     // Run the restore command
@@ -9,7 +11,7 @@ static LockFile? GetLockFile(string projectPath, string outputPath)
     var directoryName = Path.GetDirectoryName(projectPath);
     if (string.IsNullOrEmpty(directoryName))
     {
-        Console.WriteLine("Directory can not be determined");
+        Console.WriteLine("Error: Directory can not be determined");
         return null;
     }
     var runStatus = dotNetRunner.Run(directoryName, arguments);
@@ -33,7 +35,7 @@ static void ReportDependency(LockFileTargetLibrary projectLibrary, LockFileTarge
         var childLibrary = lockFileTargetFramework.Libraries.FirstOrDefault(library => library.Name == childDependency.Id);
         if (childLibrary is null)
         {
-            Console.WriteLine("Child library is null");
+            Console.WriteLine("Error: Child library is null");
             continue;
         }
 
@@ -84,7 +86,7 @@ foreach (var project in dependencyGraph.Projects.Where(p => p.RestoreMetadata.Pr
     var lockFile = GetLockFile(project.FilePath, project.RestoreMetadata.OutputPath);
     if (lockFile is null)
     {
-        Console.WriteLine("Lock file not found");
+        Console.WriteLine("Error: Lock file not found");
         continue;
     }
 
@@ -105,7 +107,7 @@ foreach (var project in dependencyGraph.Projects.Where(p => p.RestoreMetadata.Pr
             var projectLibrary = lockFileTargetFramework.Libraries.FirstOrDefault(library => library.Name == dependency.Name);
             if (projectLibrary is null)
             {
-                Console.WriteLine("Project library is null");
+                Console.WriteLine("Error: Project library is null");
                 continue;
             }
 
